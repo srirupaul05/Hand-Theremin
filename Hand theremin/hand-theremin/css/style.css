@@ -1,0 +1,344 @@
+:root {
+  --bg: #14081f;
+  --ink: #fbeff6;
+  --muted: #b9a3c4;
+  --line: rgba(255, 255, 255, 0.16);
+  --right: #ff3d8b; /* right hand: pitch (the live colour shifts from pink to orange as pitch rises) */
+  --left: #3cf2b0; /* left hand: instruments */
+  --shade: 10, 3, 16; /* RGB of the dark overlay colour, set by the vibe */
+  --pitch: #ff3d8b; /* updated from main.js when the colour changes */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+h1,
+.hz,
+#start {
+  font-family: "Unbounded", "Arial Black", system-ui, sans-serif;
+}
+
+.stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Layers, bottom to top: camera, vignette, sound line, interface */
+#view {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--bg);
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(var(--shade), 0.8) 100%
+  );
+}
+
+.wave {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.top,
+.readout,
+#start {
+  z-index: 3;
+}
+
+/* Top bar */
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 28px;
+  background: linear-gradient(to bottom, rgba(var(--shade), 0.85), transparent);
+}
+.top h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+#status {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.volume input {
+  width: 110px;
+  accent-color: var(--right);
+}
+
+/* Panels (solid, no blur) */
+.readout {
+  position: absolute;
+  bottom: 28px;
+  padding: 20px 24px 18px;
+  background: rgba(var(--shade), 0.74);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.tone-readout {
+  left: 28px;
+  width: min(46vw, 380px);
+}
+.pitch-readout {
+  right: 28px;
+  width: min(46vw, 560px);
+  text-align: right;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.hand-state {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 12px;
+}
+
+/* Left hand: one row per finger */
+.fingers {
+  list-style: none;
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.finger {
+  display: grid;
+  grid-template-columns: 14px 64px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+.fname {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.finger.on .dot {
+  background: var(--left);
+}
+.finger.on .fname {
+  color: var(--ink);
+  font-weight: 500;
+}
+.finger select {
+  width: 100%;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.finger select option {
+  color: #14081f;
+  background: #ffffff;
+}
+.finger.on select {
+  border-color: var(--left);
+}
+.finger select:focus-visible {
+  outline: 2px solid var(--left);
+  outline-offset: 2px;
+}
+
+/* Right hand: huge frequency number + bar */
+.hz {
+  font-size: clamp(3.6rem, 10vw, 8.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  margin-top: 6px;
+  color: var(--pitch);
+  font-variant-numeric: tabular-nums;
+}
+.hz small {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 500;
+  color: var(--muted);
+  margin-left: 10px;
+}
+.bar {
+  height: 12px;
+  margin-top: 16px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 6px;
+  background: var(--pitch);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* Start button */
+#start {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  padding: 20px 38px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2a0614;
+  background: var(--right);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+#start:hover,
+#start:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+#start[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .top {
+    padding: 12px 14px;
+  }
+  #status {
+    display: none;
+  }
+  .readout {
+    padding: 14px;
+    bottom: 14px;
+    border-radius: 14px;
+  }
+  .tone-readout {
+    left: 14px;
+    width: min(56vw, 300px);
+  }
+  .pitch-readout {
+    right: 14px;
+    width: calc(44vw - 20px);
+  }
+  .finger {
+    grid-template-columns: 12px 50px 1fr;
+    gap: 6px;
+  }
+}
+
+/* Scale, key and record controls in the top bar */
+.top-right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px 20px;
+}
+.ctl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.ctl select {
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.ctl select option {
+  color: #14081f;
+  background: #ffffff;
+}
+.ctl select:focus-visible,
+#record:focus-visible {
+  outline: 2px solid var(--left);
+  outline-offset: 2px;
+}
+#record {
+  padding: 7px 16px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+#record:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+#record.on {
+  background: var(--right);
+  border-color: var(--right);
+  color: #2a0614;
+}
+@media (max-width: 1200px) {
+  #status {
+    display: none;
+  }
+}

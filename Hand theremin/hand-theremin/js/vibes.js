@@ -1,0 +1,63 @@
+// Each vibe changes the colours, the tempo, the scale, the drum kit, how much reverb you get,
+// and which instrument starts on which finger [thumb, index, middle, ring, pinky].
+// hue: [start, span] of the right-hand colour as the pitch rises (span can be negative).
+
+export const VIBES = {
+  neon: {
+    name: "Neon",
+    bpm: 108,
+    scale: "minpent",
+    root: 9,
+    kit: "techno",
+    space: 0.7,
+    assign: ["bass", "guitar", "drums", "keys", "flute"],
+    hue: [335, 50],
+    tint: "60, 18, 80",
+    colors: {
+      bg: "#14081f",
+      ink: "#fbeff6",
+      muted: "#b9a3c4",
+      right: "#ff3d8b",
+      left: "#3cf2b0",
+      shade: "10, 3, 16",
+    },
+  },
+  temple: {
+    name: "Temple",
+    bpm: 80,
+    scale: "majpent",
+    root: 2,
+    kit: "acoustic",
+    space: 0.9,
+    assign: ["strings", "keys", "drums", "guitar", "flute"],
+    hue: [22, -30],
+    tint: "12, 68, 54",
+    colors: {
+      bg: "#0a1a16",
+      ink: "#eef7f1",
+      muted: "#9db8ac",
+      right: "#ff9a5c",
+      left: "#8fe3c0",
+      shade: "4, 14, 12",
+    },
+  },
+  ember: {
+    name: "Ember",
+    bpm: 94,
+    scale: "blues",
+    root: 4,
+    kit: "linn",
+    space: 0.45,
+    assign: ["bass", "guitar", "drums", "keys", "flute"],
+    hue: [8, 28],
+    tint: "92, 26, 18",
+    colors: {
+      bg: "#1a0a0c",
+      ink: "#fff1ea",
+      muted: "#c4a39b",
+      right: "#ff5a36",
+      left: "#6fe3d2",
+      shade: "20, 6, 8",
+    },
+  },
+};

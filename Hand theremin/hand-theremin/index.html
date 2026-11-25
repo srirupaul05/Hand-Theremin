@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hand Theremin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Unbounded:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main class="stage">
+    <canvas id="view" aria-label="Camera view with hand tracking"></canvas>
+    <canvas id="wave" class="wave" aria-hidden="true"></canvas>
+
+    <header class="top">
+      <h1>Hand Theremin</h1>
+      <div class="top-right">
+        <p id="status">Press start and allow camera access.</p>
+        <label class="ctl">
+          <span>Vibe</span>
+          <select id="vibe">
+            <option value="neon">Neon</option>
+            <option value="temple">Temple</option>
+            <option value="ember">Ember</option>
+          </select>
+        </label>
+        <label class="ctl">
+          <span>Scale</span>
+          <select id="scale">
+            <option value="minpent" selected>Minor pentatonic</option>
+            <option value="majpent">Major pentatonic</option>
+            <option value="blues">Blues</option>
+            <option value="major">Major</option>
+            <option value="chromatic">Chromatic</option>
+            <option value="free">Free (no snapping)</option>
+          </select>
+        </label>
+        <label class="ctl">
+          <span>Key</span>
+          <select id="root">
+            <option value="0">C</option>
+            <option value="1">C#</option>
+            <option value="2">D</option>
+            <option value="3">D#</option>
+            <option value="4">E</option>
+            <option value="5">F</option>
+            <option value="6">F#</option>
+            <option value="7">G</option>
+            <option value="8">G#</option>
+            <option value="9" selected>A</option>
+            <option value="10">A#</option>
+            <option value="11">B</option>
+          </select>
+        </label>
+        <button id="record" type="button" disabled>Record</button>
+        <label class="volume">
+          <span>Volume</span>
+          <input type="range" id="volume" min="0" max="100" value="60">
+        </label>
+      </div>
+    </header>
+
+    <section class="readout tone-readout" aria-label="Instruments on your left hand fingers">
+      <p class="label">Left hand: raise a finger to play its instrument</p>
+      <ul class="fingers" id="fingers"></ul>
+      <p class="hand-state" id="leftState">Left hand not detected</p>
+    </section>
+
+    <section class="readout pitch-readout" aria-label="Pitch controlled by your right hand">
+      <p class="label">Right hand: pinch for pitch, raise it for more reverb</p>
+      <div class="hz"><span id="freq">0</span><small>Hz</small></div>
+      <div class="bar">
+        <div class="bar-fill" id="pitchFill"></div>
+      </div>
+      <div class="scale"><span>0</span><span>250</span><span>500</span></div>
+      <p class="hand-state" id="rightState">Right hand not detected</p>
+    </section>
+
+    <button id="start" type="button">Start camera and sound</button>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+
+  <!-- App code -->
+  <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
